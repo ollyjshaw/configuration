@@ -1,0 +1,124 @@
+{
+  "template": {
+    "fields": [
+      "_source"
+    ],
+    "size": 0,
+    "query": {
+      "filtered": {
+        "filter": {
+          "range": {
+            "end_date": {
+              "gte": "now-1000d"
+            }
+          }
+        }
+      }
+    },
+    "aggs": {
+      "months_by_start_date": {
+        "date_histogram": {
+          "field": "start_date",
+          "interval": "month",
+          "format": "MMMM YYYY",
+          "order": {
+            "_key": "asc"
+          }
+        },
+        "aggs": {
+          "events": {
+            "top_hits": {
+              "sort": [
+                "start_date",
+                "end_date"
+              ],
+              "_source": {
+                "include": [
+                  "start_date",
+                  "end_date",
+                  "sys_title",
+                  "sys_description",
+                  "sys_url_view",
+                  "image",
+                  "format",
+                  "sys_id"
+                ]
+              },
+              "size": 500
+            }
+          }
+        }
+      },
+      "months_by_end_date": {
+        "date_histogram": {
+          "field": "end_date",
+          "interval": "month",
+          "format": "MMMM YYYY",
+          "order": {
+            "_key": "asc"
+          }
+        },
+        "aggs": {
+          "events": {
+            "top_hits": {
+              "sort": [
+                "start_date",
+                "end_date"
+              ],
+              "_source": {
+                "include": [
+                  "start_date",
+                  "end_date",
+                  "sys_title",
+                  "sys_description",
+                  "sys_url_view",
+                  "image",
+                  "format",
+                  "sys_id"
+                ]
+              },
+              "size": 500
+            }
+          }
+        }
+      },
+      "format": {
+        "terms": {
+          "field": "format",
+          "order": {
+            "_term": "asc"
+          }
+        }
+      },
+      "region": {
+        "terms": {
+          "field": "region",
+          "order": {
+            "_term": "asc"
+          }
+        }
+      },
+      "product": {
+        "terms": {
+          "field": "target_product",
+          "order": {
+            "_term": "asc"
+          }
+        }
+      },
+      "solution": {
+        "terms": {
+          "field": "solution",
+          "order": {
+            "_term": "asc"
+          }
+        }
+      }
+    }
+  },
+  "id": "events",
+  "default": {
+    "sys_type": "event"
+  },
+  "description": "List events. Accepts the following parameters: 'region', 'product', 'solution', 'format'."
+}
