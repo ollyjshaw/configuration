@@ -40,9 +40,11 @@ echo -n "" > $outputfile
 for filename in *.json;
 do
 	code="${filename%.*}"
-	echo -ne "Pushing $code"
+  echo -ne "Olly Fix: filenane  $filename"
+	echo -ne "Olly Fix: Pushing code $code"
 
 	output=$(curl -k -i -s -o $outputfile --user ${username}:${password} -w "%{http_code}" -H "Content-Type: application/json" -X POST -d@$filename ${sysapi}$code)
+  echo -ne "Olly Fix: output $output"
 
 	if [ "$output" == "200" ]; then
 	  echo " [OK]"
